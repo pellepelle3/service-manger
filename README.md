@@ -16,7 +16,8 @@ Payload:
 {
   "host" : "127.0.0.1",
   "port": 1234,
-  "conf":{ //optional
+  "id":"health.1"
+  "config":{ //optional
     // your json conf
   }
 }
@@ -37,8 +38,7 @@ and from secret store
 Payload:
 ```json
 {
-  "host" : "127.0.0.1",
-  "port": 1234,
+  "id":"health.1"
 }
 ```
 
@@ -72,12 +72,6 @@ Read from secret store
 
 Response Success:
 Http Code 200
-```json
-{
- // json config data
-}
-```
-
 
 Response Error:
 Http Code 422
