@@ -63,7 +63,7 @@ api.post('/service/add/:service',function(req,res){
 
 		consul.agent.service.register({
 	        name: service,
-	        name: json.id || service,
+	        id: json.id || service,
 	        port: json.port,
 	        address:json.host,
 	        check: {
