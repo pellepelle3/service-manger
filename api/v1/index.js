@@ -51,13 +51,21 @@ api.post('/service/add/:service',function(req,res){
 	      return res.send(json)
 		}
 
-		if(_.isObject(json.conf))
-			consul.kv.set(service,JSON.stringify(json.conf),function(err,result){
+		if(_.isObject(json.config))
+			consul.kv.set(service,JSON.stringify(json.config),function(err,result){
+			})
+		else
+			consul.kv.get(service,function(err,config){
+				if(!config) {
+					consul.kv.set(service,"{}",function(err,result){})
+				}
 			})
 
 		consul.agent.service.register({
 	        name: service,
+	        name: json.id || service,
 	        port: json.port,
+	        address:json.host,
 	        check: {
 	          http: Url.format({ protocol: 'http',
 	                             hostname: json.host,
@@ -92,11 +100,11 @@ api.post('/service/remove/:service',function(req,res){
 			res.status(status)
 	      return res.send(json)
 		}
-
-		consul.kv.del(service,function(err,result){
-			console.log("error on del key",service,err)
-		})
-		consul.agent.service.deregister(service,function(err,result){
+		if(json.config == true)
+			consul.kv.del(service,function(err,result){
+				console.log("error on del key",service,err)
+			})
+		consul.agent.service.deregister(json.id || service,function(err,result){
 			if(err || !result) {
 				status = 422 
 				err = !err ? "missing service" : err
